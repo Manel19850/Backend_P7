@@ -1,10 +1,11 @@
 const Book = require ('../models/books');
+const auth = require ('../middleware/auth');
 const fs = require ('fs');
 
 /* Créer un livre */
 exports.createBook = (req, res, next) => {
   const bookObject = JSON.parse(req.body.book);
-
+  console.log(req.body.book)
     const book = new Book({
     ...bookObject,
     userId: req.auth.userId,
@@ -17,13 +18,15 @@ exports.createBook = (req, res, next) => {
     .catch (error => res.status (400).json ({error}));
     };
 
+    /* Modifier un livre */
+
     exports.modifyBook = (req, res) => {
       const bookObject = req.file ? {
         ...JSON.parse(req.body.book),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
       } : { ...req.body };
     
-      delete bookObject._userId;
+      delete bookObject.userId;
     
       Book.findOne({ _id: req.params.id })
         .then((book) => {
@@ -38,7 +41,7 @@ exports.createBook = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
     };
 
-
+/* Supprimer un livre */
     exports.deleteBook = (req, res, next) => {
       Book.findOne({ _id: req.params.id })
         .then((book) => {
@@ -61,13 +64,14 @@ exports.createBook = (req, res, next) => {
         .catch((error) => res.status(500).json({ error }));
     };
     
-
+/* Récupérer un livre */
   exports.getOneBook = (req, res) => {
-    Book.findOne({ _: req.params.id })
+    Book.findOne({ _id: req.params.id })
       .then(book => res.status(200).json(book))
       .catch(error => res.status(404).json({ error }));
   }
 
+  /* Récupérer tous les livres  */
   exports.getAllBook=(req, res) => {
     Book.find ()
     .then (book => res.status (200).json (book))
