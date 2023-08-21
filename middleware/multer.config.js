@@ -31,6 +31,7 @@ const resizeImage = (req, res, next) => {
       .webp()
       .toFile(output)
       .then(() => {
+        
         //delete older file, keep the resized one
         fs.unlink(filePath, () => {
           req.file.path = output;

@@ -77,3 +77,48 @@ exports.createBook = (req, res, next) => {
     .then (book => res.status (200).json (book))
     .catch (error => res.status (400).json ({error}));
 }
+
+ // Noter le livre
+
+ exports.ratingBook = (req, res, next) => {
+  const updatedRating = {
+    userId: req.auth.userId,
+    grade: req.body.rating,
+  };
+
+  if (updatedRating.grade < 0 || updatedRating.grade > 5) {
+    return res.status(400).json({ message: "rating must be between 0 and 5" });
+  }
+
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      if (book.ratings.find((r) => r.userId === req.auth.userId)) {
+        return res
+          .status(400)
+          .json({ message: "User already voted for this book" });
+      } else {
+        book.ratings.push(updatedRating);
+
+        book.averageRating =
+          (book.averageRating * (book.ratings.length - 1) +
+            updatedRating.grade) /
+          book.ratings.length;
+        return book.save();
+      }
+    })
+    .then((updatedBook) => res.status(201).json(updatedBook))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+// Récupération des trois meilleurs livres
+
+exports.getBestRatings = (req, res, next) => {
+  Book.find()
+    // décroissant
+    .sort({ averageRating: -1 })
+
+    .limit(3)
+
+    .then((bestBooks) => res.status(200).json(bestBooks))
+    .catch((error) => res.status(400).json({ error }));
+};
