@@ -4,9 +4,10 @@ const path = require('path');
 const multer = require('./middleware/multer.config'); 
 const bookRoutes = require ('./routes/books');
 const userRoutes = require ('./routes/user');
-
+const cors = require('cors');
 const app = express();
 
+app.use(cors());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
