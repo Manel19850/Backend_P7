@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const bd =require ("./Base_de_données/mongo");
 const path = require('path');
 const multer = require('./middleware/multer.config'); 
 const bookRoutes = require ('./routes/books');
@@ -24,10 +24,3 @@ app.use ('/api/auth', userRoutes)
 
 
 module.exports = app;
-
-
-mongoose.connect('mongodb+srv://Manel:HmdHzEwkQ3v2Zux0@cluster0.aoaz7ds.mongodb.net/?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
