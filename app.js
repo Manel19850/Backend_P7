@@ -1,5 +1,6 @@
+require("dotenv").config();
+const mongoose = require('mongoose');
 const express = require('express');
-const bd =require ("./Base_de_données/mongo");
 const path = require('path');
 const multer = require('./middleware/multer.config'); 
 const bookRoutes = require ('./routes/books');
@@ -21,6 +22,19 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use ('/api/books', bookRoutes);
 app.use ('/api/auth', userRoutes)
 
+
+console.log("Nom d'utilisateur:", process.env.USER);
+console.log("Mot de passe:", process.env.PASSWORD);
+
+mongoose.connect(
+  `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.aoaz7ds.mongodb.net/test?retryWrites=true&w=majority`,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+)
+.then(() => console.log("Connecté à la base de données MongoDB !"))
+.catch(error => console.error("Erreur de connexion à la base de données", error));
 
 
 module.exports = app;
