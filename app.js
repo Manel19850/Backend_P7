@@ -22,10 +22,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use ('/api/books', bookRoutes);
 app.use ('/api/auth', userRoutes)
 
-
-console.log("Nom d'utilisateur:", process.env.USER);
-console.log("Mot de passe:", process.env.PASSWORD);
-
 mongoose.connect(
   `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.aoaz7ds.mongodb.net/test?retryWrites=true&w=majority`,
   {
